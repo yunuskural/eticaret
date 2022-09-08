@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: eticaret
+  jpa:
+   database-platform: org.hibernate.dialect.PostgreSQL81Dialect
+   show-sql: true
+   hibernate:
+    ddl-auto: update
+  h2:
+   console.enabled: true
+  datasource:
+   username: postgres
+   password: 123
+   url: jdbc:postgresql://localhost:5432/postgres
+   driverClassName: org.postgresql.Driver
+server:
+  port: 2000
+
+logging:
+   level:
+     org:
+       springframework:
+         security: DEBUG
+jwt:
+  secret: HRlELXqpSB
