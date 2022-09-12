@@ -2,16 +2,19 @@ package com.metric.eticaret.user.controller;
 
 
 import com.metric.eticaret.authentication.model.HttpResponse;
+import com.metric.eticaret.authentication.model.HttpResponseService;
+import com.metric.eticaret.exception.domain.UserNotFoundException;
+import com.metric.eticaret.exception.domain.UsernameExistException;
 import com.metric.eticaret.exception.domain.UsernameNotFoundException;
 import com.metric.eticaret.user.model.User;
 import com.metric.eticaret.user.repository.UserRepository;
-import com.metric.eticaret.user.service.UserServiceImpl;
+import com.metric.eticaret.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,36 +24,33 @@ import java.util.Locale;
 @RequestMapping("/api/user")
 public class UserController {
 
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
     private final UserRepository userRepository;
-
+    private final HttpResponseService httpResponseService;
 
 
     @PostMapping("/save")
-    public ResponseEntity<HttpResponse> save(@RequestBody User newUser) throws UsernameNotFoundException {
-        User user = userServiceImpl.save(newUser);
-        HttpStatus httpStatus = HttpStatus.OK;
-        HttpResponse httpResponse = new HttpResponse(httpStatus.value(), httpStatus,
-                httpStatus.getReasonPhrase().toUpperCase(Locale.ROOT), "Successfull", Collections.singletonList(user));
-        return new ResponseEntity<>(httpResponse, httpStatus);
+    public ResponseEntity<HttpResponse> save(@RequestBody User newUser) throws UsernameNotFoundException, UsernameExistException {
+        User user = userService.save(newUser);
+        return httpResponseService.response(user, "Successfully created", HttpStatus.CREATED);
     }
 
     @GetMapping("/users")
-    public ResponseEntity<HttpResponse> retrieveAllUser() {
-        List<User> users = userRepository.findAll();
-        HttpStatus httpStatus = HttpStatus.OK;
-        HttpResponse httpResponse = new HttpResponse(httpStatus.value(), httpStatus,
-                httpStatus.getReasonPhrase().toUpperCase(Locale.ROOT), "Successfull", Collections.singletonList(users));
-        return new ResponseEntity<>(httpResponse, httpStatus);
+    public ResponseEntity<List<User>> retrieveAllUser() {
+        return new ResponseEntity<>(userRepository.findAll(),HttpStatus.OK);
+
     }
 
-    @DeleteMapping("/user/{id}")
-    public void deleteUserById(@PathVariable("id") Long id) {
-        userRepository.deleteById(id);
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN')")
+    public ResponseEntity<HttpResponse> deleteUserById(@PathVariable("id") Long id) throws UserNotFoundException {
+        userService.deleteUser(id);
+        return httpResponseService.response(null,"User deleted successfully", HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/user/{id}")
-    public void getUserById(@PathVariable("id") Long id) {
-        userRepository.findById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<HttpResponse> getUserById(@PathVariable("id") Long id) throws UserNotFoundException {
+        User user = userService.getUser(id);
+        return httpResponseService.response(user, "Successfull", HttpStatus.OK);
     }
 }

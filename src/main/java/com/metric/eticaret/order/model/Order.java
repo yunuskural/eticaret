@@ -23,7 +23,7 @@ public class Order {
     private Long id;
 
     @Column(name = "order_number")
-    private String orderNumber;
+    private int orderNumber;
 
     @Column(name = "cargo_price")
     private BigDecimal cargoPrice;
@@ -34,8 +34,13 @@ public class Order {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
+    @Column(name = "price")
+    private BigDecimal price;
+
     @Column(name = "currency_code")
     private String currencyCode;
+
+    //
 
     @Column(name = "order_date")
     private Long orderDate;
@@ -44,7 +49,7 @@ public class Order {
     private String invoiceFullAddress;
 
     @Column(name = "tax_number")
-    private String taxNumber;
+    private BigDecimal taxNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")

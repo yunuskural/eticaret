@@ -1,12 +1,13 @@
 package com.metric.eticaret.user.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.metric.eticaret.order.model.Order;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -26,6 +27,9 @@ public class User {
 
     @Column(name = "username")
     private String username;
+
+    @Column(name = "address")
+    private String address;
 
     @Column(name = "name")
     private String name;
@@ -49,12 +53,11 @@ public class User {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id") )
-    private Set<Role> roles;
+    @JsonIgnoreProperties("users")
+    private List<Role> roles;
 
     @OneToMany(mappedBy = "user")
     private Set<Order> orders;
-
-    private String[] authorities;
 
     @Column(name = "active")
     private boolean isActive;

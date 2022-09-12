@@ -38,7 +38,7 @@ public class AuthenticationController extends ExceptionHandling {
         String token;
         UserDetails userDetails = custemUserDetailsService.loadUserByUsername(loginRequest.getUsername());
         if (userDetails.getUsername()==null){
-            throw new IncorrectCredentialException("Username or password is incorrect");
+            throw new IncorrectCredentialException("Username/password incorrect. Please try again");
         }
         token = jwtTokenUtil.generateToken(userDetails);
 

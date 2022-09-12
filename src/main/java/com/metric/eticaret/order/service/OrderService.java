@@ -9,4 +9,8 @@ public interface OrderService {
     Order save(Order order);
 
     List<Order> retrieveAllOrders();
+
+    Order getUser(Long id);
+
+    void deleteUser(Long id);
 }

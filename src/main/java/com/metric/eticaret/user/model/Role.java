@@ -1,11 +1,11 @@
 package com.metric.eticaret.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -24,5 +24,19 @@ public class Role {
     @JoinTable(name = "role_authorities",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
-    private Set<Authority> authorities;
+    @JsonIgnoreProperties("roles")
+    private List<Authority> authorities;
+
+
+    @ManyToMany(mappedBy = "roles")
+    @JsonIgnoreProperties("roles")
+    private List<User> users;
+
+    public Role(String name) {
+
+    }
+
+    public Role() {
+
+    }
 }

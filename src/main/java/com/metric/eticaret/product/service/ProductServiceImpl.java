@@ -8,18 +8,35 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl {
+public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
 
     @Transactional
-    public void save(Product product) {
+    @Override
+    public Product save(Product product) {
         if (product.getId() != null && product != null) {
             productRepository.findById(product.getId()).orElseThrow(() -> new ProductNotFoundException("Product not found"));
         }
-        productRepository.save(product);
+       return productRepository.save(product);
+    }
+
+    @Override
+    public List<Product> findAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        productRepository.deleteById(id);
+    }
+
+    @Override
+    public Product getUser(Long id) {
+        return productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found"));
     }
 }

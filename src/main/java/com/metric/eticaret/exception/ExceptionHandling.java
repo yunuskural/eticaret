@@ -3,6 +3,7 @@ package com.metric.eticaret.exception;
 
 import com.metric.eticaret.authentication.model.HttpResponse;
 import com.metric.eticaret.exception.domain.*;
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -40,10 +41,9 @@ public class ExceptionHandling {
     public ResponseEntity<HttpResponse> accountLockedException() {
         return createHttpResponse(HttpStatus.BAD_REQUEST, ACCOUNT_LOCKED);
     }
-
     @ExceptionHandler(IncorrectCredentialException.class)
     public ResponseEntity<HttpResponse> incorrectCredentialException(IncorrectCredentialException exception) {
-        return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(UsernameExistException.class)
@@ -81,6 +81,10 @@ public class ExceptionHandling {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<HttpResponse> usernameNotFoundException(UsernameNotFoundException exception) {
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception) {
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(RoleNotFoundException.class)
