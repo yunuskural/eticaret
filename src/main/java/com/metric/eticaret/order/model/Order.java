@@ -1,15 +1,13 @@
 package com.metric.eticaret.order.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.metric.eticaret.product.model.Product;
 import com.metric.eticaret.user.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -40,8 +38,6 @@ public class Order {
     @Column(name = "currency_code")
     private String currencyCode;
 
-    //
-
     @Column(name = "order_date")
     private Long orderDate;
 
@@ -53,12 +49,14 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties("orders")
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "order_products",
             joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
+    @JsonIgnoreProperties("orders")
     private Set<Product> products;
 
 }

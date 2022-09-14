@@ -2,8 +2,8 @@ package com.metric.eticaret.product.controller;
 
 
 import com.metric.eticaret.authentication.model.HttpResponse;
-import com.metric.eticaret.authentication.model.HttpResponseService;
-import com.metric.eticaret.exception.domain.UserNotFoundException;
+import com.metric.eticaret.authentication.config.HttpResponseService;
+import com.metric.eticaret.exception.domain.NotFoundException;
 import com.metric.eticaret.product.model.Product;
 import com.metric.eticaret.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class ProductController {
 
 
     @PostMapping("/save")
-    public ResponseEntity<HttpResponse> save(@RequestBody Product newProduct){
+    public ResponseEntity<HttpResponse> save(@RequestBody Product newProduct) throws NotFoundException {
         Product product = productService.save(newProduct);
         return httpResponseService.response(product, "Successfully created", HttpStatus.CREATED);
     }
@@ -39,7 +39,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('delete')")
-    public ResponseEntity<HttpResponse> deleteUserById(@PathVariable("id") Long id) throws UserNotFoundException {
+    public ResponseEntity<HttpResponse> deleteProductById(@PathVariable("id") Long id){
         productService.deleteUser(id);
         return response(HttpStatus.NO_CONTENT, "User deleted successfully");
     }
@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HttpResponse> getUserById(@PathVariable("id") Long id) throws UserNotFoundException {
+    public ResponseEntity<HttpResponse> getUserById(@PathVariable("id") Long id) throws NotFoundException {
         Product product = productService.getUser(id);
         return httpResponseService.response(product, "Successfull", HttpStatus.OK);
     }

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
@@ -35,9 +37,11 @@ public class User {
     private String name;
 
     @Column(name = "email")
+    @Email
     private String email;
 
     @Column(name = "password")
+    @NotNull
     private String password;
 
     @Column(name = "profile_image_url")

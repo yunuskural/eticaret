@@ -1,13 +1,12 @@
 package com.metric.eticaret.user.service;
 
-import com.metric.eticaret.exception.domain.UserNotFoundException;
-import com.metric.eticaret.exception.domain.UsernameExistException;
-import com.metric.eticaret.exception.domain.UsernameNotFoundException;
+import com.metric.eticaret.exception.domain.ExistException;
+import com.metric.eticaret.exception.domain.NotFoundException;
 import com.metric.eticaret.user.model.User;
 
 public interface UserService {
 
-    User save(User user) throws UsernameNotFoundException, UsernameExistException;
-    User getUser(Long id) throws UserNotFoundException;
-    void deleteUser(Long id) throws UserNotFoundException;
+    User save(User user) throws NotFoundException, ExistException;
+    User getUser(Long id) throws NotFoundException;
+    void deleteUser(Long id) ;
 }

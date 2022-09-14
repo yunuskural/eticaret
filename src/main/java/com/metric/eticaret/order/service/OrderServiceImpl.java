@@ -1,9 +1,11 @@
 package com.metric.eticaret.order.service;
 
 
-import com.metric.eticaret.exception.domain.OrderNotFoundException;
+import com.metric.eticaret.authentication.config.JwtTokenUtil;
+import com.metric.eticaret.exception.domain.NotFoundException;
 import com.metric.eticaret.order.model.Order;
 import com.metric.eticaret.order.repository.OrderRepository;
+import com.metric.eticaret.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +20,21 @@ import java.util.Random;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final UserRepository userRepository;
 
     @Transactional
     @Override
-    public Order save(Order order) {
+    public Order save(Order order) throws NotFoundException {
+
         if (order != null && order.getId() != null) {
             orderRepository.findById(order.getId()).orElseThrow(() ->
-                    new OrderNotFoundException("order not found"));
+                    new NotFoundException("order not found"));
 
         }
         order.setOrderDate(new Date().getTime());
+        //todo product logic
+       // order.setUser(userRepository.findByUsername(jwtTokenUtil.getUsernameFromToken()));
         Random random = new Random();
         int orderNumber = random.nextInt(100000);
         order.setOrderNumber(orderNumber);
@@ -44,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getUser(Long id) {
-        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException("Order not found"));
+    public Order getUser(Long id) throws NotFoundException {
+        return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
     }
 
     @Override

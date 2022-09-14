@@ -1,7 +1,7 @@
 package com.metric.eticaret.user.controller;
 
 
-import com.metric.eticaret.exception.domain.RoleNotFoundException;
+import com.metric.eticaret.exception.domain.NotFoundException;
 import com.metric.eticaret.user.model.Role;
 import com.metric.eticaret.user.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class RoleController {
     private final RoleService roleService;
 
     @PostMapping("/save")
-    public ResponseEntity<Role> save(@RequestBody Role role) throws RoleNotFoundException {
+    public ResponseEntity<Role> save(@RequestBody Role role) throws NotFoundException {
         return new ResponseEntity<>(roleService.save(role), HttpStatus.OK);
     }
 

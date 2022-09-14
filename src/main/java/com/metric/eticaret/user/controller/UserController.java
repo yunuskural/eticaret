@@ -2,10 +2,9 @@ package com.metric.eticaret.user.controller;
 
 
 import com.metric.eticaret.authentication.model.HttpResponse;
-import com.metric.eticaret.authentication.model.HttpResponseService;
-import com.metric.eticaret.exception.domain.UserNotFoundException;
-import com.metric.eticaret.exception.domain.UsernameExistException;
-import com.metric.eticaret.exception.domain.UsernameNotFoundException;
+import com.metric.eticaret.authentication.config.HttpResponseService;
+import com.metric.eticaret.exception.domain.ExistException;
+import com.metric.eticaret.exception.domain.NotFoundException;
 import com.metric.eticaret.user.model.User;
 import com.metric.eticaret.user.repository.UserRepository;
 import com.metric.eticaret.user.service.UserService;
@@ -16,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +28,7 @@ public class UserController {
 
 
     @PostMapping("/save")
-    public ResponseEntity<HttpResponse> save(@RequestBody User newUser) throws UsernameNotFoundException, UsernameExistException {
+    public ResponseEntity<HttpResponse> save(@RequestBody User newUser) throws NotFoundException, ExistException {
         User user = userService.save(newUser);
         return httpResponseService.response(user, "Successfully created", HttpStatus.CREATED);
     }
@@ -43,13 +41,13 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN')")
-    public ResponseEntity<HttpResponse> deleteUserById(@PathVariable("id") Long id) throws UserNotFoundException {
+    public ResponseEntity<HttpResponse> deleteUserById(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return httpResponseService.response(null,"User deleted successfully", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HttpResponse> getUserById(@PathVariable("id") Long id) throws UserNotFoundException {
+    public ResponseEntity<HttpResponse> getUserById(@PathVariable("id") Long id) throws NotFoundException {
         User user = userService.getUser(id);
         return httpResponseService.response(user, "Successfull", HttpStatus.OK);
     }

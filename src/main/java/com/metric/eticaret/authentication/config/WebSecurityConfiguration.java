@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    public static final String[] PUBLIC_URLS = {"/api/**"};
+    public static final String[] PUBLIC_URLS = {"/api/auth/**","/api/user/save"};
     private final CustemUserDetailsService custemUserDetailsService;
     private final JwtFilter jwtFilter;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;

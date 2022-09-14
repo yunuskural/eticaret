@@ -2,24 +2,34 @@ spring:
   application:
     name: eticaret
   jpa:
-   database-platform: org.hibernate.dialect.PostgreSQL81Dialect
-   show-sql: true
-   hibernate:
-    ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL81Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
   h2:
-   console.enabled: true
+    console.enabled: true
   datasource:
-   username: postgres
-   password: 123
-   url: jdbc:postgresql://localhost:5432/postgres
-   driverClassName: org.postgresql.Driver
+    username: postgres
+    password: 123
+    url: jdbc:postgresql://localhost:5432/postgres
+    driverClassName: org.postgresql.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: yunuskural34@gmail.com
+    password: 123
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 server:
   port: 2000
-
 logging:
-   level:
-     org:
-       springframework:
-         security: DEBUG
+  level:
+    org:
+      springframework:
+        security: DEBUG
 jwt:
   secret: HRlELXqpSB

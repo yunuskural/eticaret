@@ -1,7 +1,7 @@
 package com.metric.eticaret.user.service;
 
 
-import com.metric.eticaret.exception.domain.RoleNotFoundException;
+import com.metric.eticaret.exception.domain.NotFoundException;
 import com.metric.eticaret.user.model.Role;
 import com.metric.eticaret.user.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +17,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional
     @Override
-    public Role save(Role newRole) throws RoleNotFoundException {
+    public Role save(Role newRole) throws NotFoundException {
         if(newRole.getId() !=null && newRole != null){
-            roleRepository.findById(newRole.getId()).orElseThrow(() -> new RoleNotFoundException("Role is not found"));
+            roleRepository.findById(newRole.getId()).orElseThrow(() -> new NotFoundException("Role is not found"));
         }
         return roleRepository.save(newRole);
     }

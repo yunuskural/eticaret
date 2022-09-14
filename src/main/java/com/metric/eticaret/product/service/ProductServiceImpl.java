@@ -1,7 +1,7 @@
 package com.metric.eticaret.product.service;
 
 
-import com.metric.eticaret.exception.domain.ProductNotFoundException;
+import com.metric.eticaret.exception.domain.NotFoundException;
 import com.metric.eticaret.product.model.Product;
 import com.metric.eticaret.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,9 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public Product save(Product product) {
+    public Product save(Product product) throws NotFoundException {
         if (product.getId() != null && product != null) {
-            productRepository.findById(product.getId()).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+            productRepository.findById(product.getId()).orElseThrow(() -> new NotFoundException("Product not found"));
         }
        return productRepository.save(product);
     }
@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product getUser(Long id) {
-        return productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found"));
+    public Product getUser(Long id) throws NotFoundException {
+        return productRepository.findById(id).orElseThrow(()-> new NotFoundException("Product not found"));
     }
 }
