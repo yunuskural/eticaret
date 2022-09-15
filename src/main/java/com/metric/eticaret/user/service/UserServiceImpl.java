@@ -29,7 +29,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User save(User newUser) throws NotFoundException{
+    public User save(User newUser) throws NotFoundException, ExistException {
+        validateUser(newUser);
         User user;
         String password = newUser.getPassword();
         Long joinDate = new Date().getTime();
@@ -58,6 +59,18 @@ public class UserServiceImpl implements UserService {
         return user;
 
         //emailService.sendEmail(user.getEmail(),"New Account","New Account has been created successfully");
+    }
+
+    public User validateUser(User newUser) throws ExistException {
+        User userByUsername = userRepository.findByUsername(newUser.getUsername());
+        User userByEmail = userRepository.findByEmail(newUser.getEmail());
+        if (userByUsername != null && !userByUsername.getId().equals(newUser.getId())) {
+            throw new ExistException("Username already exists");
+        }
+        if (userByEmail != null && !userByEmail.getId().equals(newUser.getId())) {
+            throw new ExistException("Email already exists");
+        }
+        return null;
     }
 
 
