@@ -1,7 +1,6 @@
 package com.metric.eticaret.authentication.config;
 
 import com.metric.eticaret.authentication.model.HttpResponse;
-import com.metric.eticaret.user.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

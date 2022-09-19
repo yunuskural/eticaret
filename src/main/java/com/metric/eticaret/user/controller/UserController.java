@@ -40,15 +40,15 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN')")
+    //@PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<HttpResponse> deleteUserById(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return httpResponseService.response(null,"User deleted successfully", HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<HttpResponse> getUserById(@PathVariable("id") Long id) throws NotFoundException {
-        User user = userService.getUser(id);
+    @GetMapping("/{username}")
+    public ResponseEntity<HttpResponse> getUserByUsername(@PathVariable("username") String username) throws NotFoundException {
+        User user = userService.getUserById(username);
         return httpResponseService.response(user, "Successfull", HttpStatus.OK);
     }
 }

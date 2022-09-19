@@ -12,10 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -53,8 +50,8 @@ public class UserServiceImpl implements UserService {
             });
             user.setRoles(newRoles);
         }
-        user.setActive(true);
-        user.setNotLocked(true);
+        user.setActive(Boolean.TRUE);
+        user.setNotLocked(Boolean.TRUE);
         userRepository.save(user);
         return user;
 
@@ -75,8 +72,12 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getUser(Long id) throws NotFoundException {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+    public User getUserById(String username) throws NotFoundException {
+        User user= userRepository.findByUsername(username);
+        if (user==null){
+            throw new NotFoundException("User not found");
+        }
+        return user;
     }
 
     @Override

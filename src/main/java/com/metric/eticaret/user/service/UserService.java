@@ -7,6 +7,6 @@ import com.metric.eticaret.user.model.User;
 public interface UserService {
 
     User save(User user) throws NotFoundException, ExistException;
-    User getUser(Long id) throws NotFoundException;
+    User getUserById(String  username) throws NotFoundException;
     void deleteUser(Long id) ;
 }

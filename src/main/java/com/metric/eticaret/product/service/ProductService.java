@@ -6,7 +6,10 @@ import com.metric.eticaret.product.model.Product;
 import java.util.List;
 
 public interface ProductService {
+
     Product save(Product product) throws NotFoundException;
+
+    List<Product> findAllByProductName(String productName);
 
     List<Product> findAllProducts();
 

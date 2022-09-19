@@ -18,6 +18,7 @@ import java.util.Locale;
 @RestController
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 
     private final ProductService productService;
@@ -31,9 +32,16 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<HttpResponse> retrieveAllUser() {
+    public ResponseEntity<HttpResponse> retrieveAllProducts() {
         List<Product> products = productService.findAllProducts();
-        return httpResponseService.response(products, "Successfull", HttpStatus.OK);
+        return httpResponseService.response(products, "Products Successfullly loaded", HttpStatus.OK);
+
+    }
+
+    @GetMapping("/products/{productName}")
+    public ResponseEntity<HttpResponse> findAllByProductName(@PathVariable("productName") String productName) {
+        List<Product> products = productService.findAllByProductName(productName);
+        return httpResponseService.response(products, String.format("Product(s) %s successfullly loaded",productName), HttpStatus.OK);
 
     }
 
@@ -41,12 +49,7 @@ public class ProductController {
     @PreAuthorize("hasAnyAuthority('delete')")
     public ResponseEntity<HttpResponse> deleteProductById(@PathVariable("id") Long id){
         productService.deleteUser(id);
-        return response(HttpStatus.NO_CONTENT, "User deleted successfully");
-    }
-
-    public ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {
-        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus,
-                httpStatus.getReasonPhrase().toUpperCase(Locale.ROOT), message.toLowerCase(), null), httpStatus);
+        return httpResponseService.response(null,"Successfully deleted", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/{id}")

@@ -2,6 +2,8 @@ package com.metric.eticaret.product.service;
 
 
 import com.metric.eticaret.exception.domain.NotFoundException;
+import com.metric.eticaret.order.model.ShopCard;
+import com.metric.eticaret.order.repository.ShopCardRepository;
 import com.metric.eticaret.product.model.Product;
 import com.metric.eticaret.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +14,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ShopCardRepository shopCardRepository;
 
     @Transactional
     @Override
@@ -22,7 +25,12 @@ public class ProductServiceImpl implements ProductService{
         if (product.getId() != null && product != null) {
             productRepository.findById(product.getId()).orElseThrow(() -> new NotFoundException("Product not found"));
         }
-       return productRepository.save(product);
+        return productRepository.save(product);
+}
+
+    @Override
+    public List<Product> findAllByProductName(String productName) {
+        return productRepository.findAllByProductName(productName);
     }
 
     @Override
@@ -37,6 +45,6 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product getUser(Long id) throws NotFoundException {
-        return productRepository.findById(id).orElseThrow(()-> new NotFoundException("Product not found"));
+        return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found"));
     }
 }
