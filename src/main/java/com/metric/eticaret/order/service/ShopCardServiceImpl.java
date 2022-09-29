@@ -8,9 +8,8 @@ import com.metric.eticaret.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.transaction.Transactional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -20,19 +19,35 @@ public class ShopCardServiceImpl implements ShopCardService {
     private final ProductRepository productRepository;
 
     @Override
-    public void save(ShopCard shopCard) throws NotFoundException {
-        if (shopCard.getId() != 0 && shopCard != null) {
-            shopCardRepository.findById(shopCard.getId()).orElseThrow(() -> new NotFoundException("Shop card not found"));
+    @Transactional
+    public ShopCard addProductToShopCard(Long productId) throws NotFoundException {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Product not found"));
+        ShopCard shopCard = shopCardRepository.findById(1).orElseThrow(() -> new NotFoundException("Shopcard not found"));
+        if (product != null && product.getStockQuantity() != 0) {
+            product.setShopCard(shopCard);
+            shopCard.getProducts().add(product);
+            productRepository.save(product);
+            shopCardRepository.save(shopCard);
         }
-        Set<Product> products = new HashSet<>();
-        shopCard.getProducts().forEach(product ->
-                products.add(productRepository.findByProductName(product.getProductName())));
-        shopCard.setProducts(products);
+        return shopCard;
     }
 
     @Override
-    public List<ShopCard> retrieveAllBasket() {
-        return shopCardRepository.findAll();
+    public ShopCard retrieveShopCard() throws NotFoundException {
+        return shopCardRepository.findById(1).orElseThrow(() -> new NotFoundException("Shop card not found"));
+    }
+
+    @Override
+    public ShopCard deleteProductInShopCard(Long productId) throws NotFoundException {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Product not found"));
+        ShopCard shopCard = shopCardRepository.findById(1).orElseThrow(() -> new NotFoundException("Shopcard not found"));
+        if (product != null && shopCard.getProducts().contains(product)) {
+            shopCard.getProducts().remove(product);
+            product.setShopCard(null);
+            productRepository.save(product);
+            shopCardRepository.save(shopCard);
+        }
+        return shopCard;
     }
 
 

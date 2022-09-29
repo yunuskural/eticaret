@@ -39,12 +39,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteProductById(Long id) throws NotFoundException {
+        productRepository.findById(id).orElseThrow(()-> new NotFoundException("Product not found"));
         productRepository.deleteById(id);
     }
 
     @Override
-    public Product getUser(Long id) throws NotFoundException {
+    public Product getProductById(Long id) throws NotFoundException {
         return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found"));
     }
 }

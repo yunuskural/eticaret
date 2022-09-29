@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.*;
 
+import static com.metric.eticaret.authentication.config.SetupDataLoader.ROLE_USER;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -22,12 +24,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final EmailServiceImpl emailService;
 
     @Transactional
     @Override
     public User save(User newUser) throws NotFoundException, ExistException {
-        validateUser(newUser);
         User user;
         String password = newUser.getPassword();
         Long joinDate = new Date().getTime();
@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
             joinDate = user.getJoinDate();
             roles = user.getRoles();
         }
+        validateUser(newUser);
         user = newUser;
         user.setPassword(bCryptPasswordEncoder.encode(password));
         user.setJoinDate(joinDate);
@@ -54,8 +55,6 @@ public class UserServiceImpl implements UserService {
         user.setNotLocked(Boolean.TRUE);
         userRepository.save(user);
         return user;
-
-        //emailService.sendEmail(user.getEmail(),"New Account","New Account has been created successfully");
     }
 
     public User validateUser(User newUser) throws ExistException {
@@ -70,19 +69,29 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-
     @Override
-    public User getUserById(String username) throws NotFoundException {
-        User user= userRepository.findByUsername(username);
-        if (user==null){
-            throw new NotFoundException("User not found");
-        }
-        return user;
+    public User getUserById(Long id) throws NotFoundException {
+        User user = userRepository.findById(id).orElseThrow(()-> new NotFoundException("User not found"));
+           User.UserBuilder userBuilder = User.builder()
+                   .id(user.getId())
+                   .username(user.getUsername())
+                   .address(user.getAddress())
+                   .email(user.getEmail())
+                   .name(user.getName())
+                   .isActive(user.isActive())
+                   .isNotLocked(user.isNotLocked())
+                   .roles(user.getRoles());
+           return userBuilder.build();
     }
 
     @Override
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public void deleteUserById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.getRoles().clear();
+            userRepository.deleteById(id);
+        }
     }
 
 }

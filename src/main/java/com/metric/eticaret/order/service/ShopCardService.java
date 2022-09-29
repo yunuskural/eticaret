@@ -6,7 +6,10 @@ import com.metric.eticaret.order.model.ShopCard;
 import java.util.List;
 
 public interface ShopCardService {
-    void save(ShopCard shopCard) throws NotFoundException;
 
-    List<ShopCard> retrieveAllBasket();
+    ShopCard addProductToShopCard(Long productId) throws NotFoundException;
+
+    ShopCard retrieveShopCard() throws NotFoundException;
+
+    ShopCard deleteProductInShopCard(Long productId) throws NotFoundException;
 }

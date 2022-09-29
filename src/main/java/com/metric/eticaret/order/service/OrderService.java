@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    Order save(Order order, Long id) throws NotFoundException;
+    Order save(Order order, String username) throws NotFoundException;
 
     List<Order> retrieveAllOrders();
 

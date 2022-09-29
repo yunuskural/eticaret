@@ -13,7 +13,7 @@ public interface ProductService {
 
     List<Product> findAllProducts();
 
-    void deleteUser(Long id);
+    void deleteProductById(Long id) throws NotFoundException;
 
-    Product getUser(Long id) throws NotFoundException;
+    Product getProductById(Long id) throws NotFoundException;
 }

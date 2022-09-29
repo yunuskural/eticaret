@@ -46,15 +46,13 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('delete')")
-    public ResponseEntity<HttpResponse> deleteProductById(@PathVariable("id") Long id){
-        productService.deleteUser(id);
-        return httpResponseService.response(null,"Successfully deleted", HttpStatus.NO_CONTENT);
+    public void deleteProductById(@PathVariable("id") Long id) throws NotFoundException {
+        productService.deleteProductById(id);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HttpResponse> getUserById(@PathVariable("id") Long id) throws NotFoundException {
-        Product product = productService.getUser(id);
+    public ResponseEntity<HttpResponse> getProductById(@PathVariable("id") Long id) throws NotFoundException {
+        Product product = productService.getProductById(id);
         return httpResponseService.response(product, "Successfull", HttpStatus.OK);
     }
 }

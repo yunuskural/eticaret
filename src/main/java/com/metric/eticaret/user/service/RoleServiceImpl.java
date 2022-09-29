@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,5 +23,15 @@ public class RoleServiceImpl implements RoleService {
             roleRepository.findById(newRole.getId()).orElseThrow(() -> new NotFoundException("Role is not found"));
         }
         return roleRepository.save(newRole);
+    }
+
+    @Override
+    public List<Role> retrieveAllRoles() {
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public Role getRoleById(Integer id) throws NotFoundException {
+        return roleRepository.findById(id).orElseThrow(()-> new NotFoundException("Role not found"));
     }
 }

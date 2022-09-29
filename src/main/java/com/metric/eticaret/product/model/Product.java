@@ -2,6 +2,7 @@ package com.metric.eticaret.product.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.metric.eticaret.order.model.Order;
 import com.metric.eticaret.order.model.ShopCard;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,11 +38,17 @@ public class Product {
     @Column(name = "category")
     private String category;
 
+    @Column(name = "image")
+    private String image;
+
     @Column(name = "brand")
     private String brand;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("products")
     private ShopCard shopCard;
+
+    @ManyToMany(mappedBy = "products")
+    private List<Order> orders;
 
 }

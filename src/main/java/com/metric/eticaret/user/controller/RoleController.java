@@ -9,9 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/role")
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/user/role")
 public class RoleController {
 
     private final RoleService roleService;
@@ -21,8 +24,13 @@ public class RoleController {
         return new ResponseEntity<>(roleService.save(role), HttpStatus.OK);
     }
 
-  /*  @PostMapping("/role/{id}/authority")
-    public ResponseEntity<Role> createAuthorityForRole(@PathVariable("id") Integer id) throws RoleNotFoundException {
-        return new ResponseEntity<>(roleService.createAuthorityForRole(id),HttpStatus.OK);
-    }*/
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> retrieveAllRoles(){
+        return new ResponseEntity<>(roleService.retrieveAllRoles(),HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Role> getRoleById(@PathVariable("id") Integer id) throws NotFoundException {
+        return new ResponseEntity<>(roleService.getRoleById(id),HttpStatus.OK);
+    }
 }

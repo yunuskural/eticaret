@@ -24,7 +24,7 @@ public class Authority {
     @Column(name = "authority_name")
     private String name;
 
-    @ManyToMany(mappedBy = "authorities")
+    @ManyToMany(mappedBy = "authorities",cascade = CascadeType.ALL)
     @JsonIgnoreProperties("authorities")
     private List<Role> roles;
 

@@ -27,11 +27,6 @@ public class Role {
     @JsonIgnoreProperties("roles")
     private List<Authority> authorities;
 
-
-    @ManyToMany(mappedBy = "roles")
-    @JsonIgnoreProperties("roles")
-    private List<User> users;
-
     public Role(String name) {
 
     }

@@ -22,10 +22,10 @@ public class OrderController {
     private final OrderService orderService;
     private final HttpResponseService httpResponseService;
 
-    @PostMapping("/save/{id}")
+    @PostMapping("/save/{username}")
     public ResponseEntity<HttpResponse> save(@RequestBody Order newOrder,
-                                             @PathVariable("id") Long id) throws NotFoundException {
-        Order order = orderService.save(newOrder,id);
+                                             @PathVariable("username") String username) throws NotFoundException {
+        Order order = orderService.save(newOrder,username);
         return httpResponseService.response(order, "Successfull", HttpStatus.CREATED);
     }
 
@@ -43,7 +43,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HttpResponse> getUserById(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<HttpResponse> getOrderrById(@PathVariable("id") Long id) throws NotFoundException {
         Order order = orderService.getOrder(id);
         return httpResponseService.response(order, "Successfull", HttpStatus.CREATED);
     }
