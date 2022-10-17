@@ -1,6 +1,6 @@
 package com.metric.eticaret.authentication.service;
 
-import com.metric.eticaret.user.model.User;
+import com.metric.eticaret.user.model.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,7 +34,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.isNotLocked();
+        return user.getNonlocked();
     }
 
     @Override
@@ -44,6 +44,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.isActive();
+        return user.getStatus();
     }
 }

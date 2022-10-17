@@ -1,6 +1,8 @@
-package com.metric.eticaret.user.model;
+package com.metric.eticaret.user.model.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.metric.eticaret.user.model.authority.Authority;
+import com.metric.eticaret.user.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +28,9 @@ public class Role {
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     @JsonIgnoreProperties("roles")
     private List<Authority> authorities;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles", cascade = CascadeType.ALL)
+    private List<User> users;
 
     public Role(String name) {
 

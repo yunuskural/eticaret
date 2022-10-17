@@ -1,14 +1,12 @@
 package com.metric.eticaret.user.repository;
 
 
-import com.metric.eticaret.user.model.User;
+import com.metric.eticaret.user.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 

@@ -1,15 +1,13 @@
 package com.metric.eticaret.order.service;
 
 import com.metric.eticaret.exception.domain.NotFoundException;
-import com.metric.eticaret.order.model.ShopCard;
-
-import java.util.List;
+import com.metric.eticaret.order.model.shopcard.ShopCardDTO;
 
 public interface ShopCardService {
 
-    ShopCard addProductToShopCard(Long productId) throws NotFoundException;
+    ShopCardDTO addProductInShopCard(Long productId, String username) throws NotFoundException;
 
-    ShopCard retrieveShopCard() throws NotFoundException;
+    ShopCardDTO retrieveShopCardProducts(String username) throws NotFoundException;
 
-    ShopCard deleteProductInShopCard(Long productId) throws NotFoundException;
+    ShopCardDTO deleteProductInShopCard(Long productId, String username) throws NotFoundException;
 }

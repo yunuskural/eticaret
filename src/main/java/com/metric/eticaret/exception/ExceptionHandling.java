@@ -1,8 +1,8 @@
 package com.metric.eticaret.exception;
 
 
-import com.metric.eticaret.authentication.model.HttpResponse;
 import com.metric.eticaret.authentication.config.HttpResponseService;
+import com.metric.eticaret.authentication.model.HttpResponse;
 import com.metric.eticaret.exception.domain.ExistException;
 import com.metric.eticaret.exception.domain.NotFoundException;
 import org.slf4j.Logger;
@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.validation.ConstraintViolationException;
 import java.util.Objects;
 
+import static org.springframework.http.HttpStatus.*;
+
 @RestControllerAdvice
 public class ExceptionHandling {
 
@@ -29,41 +31,42 @@ public class ExceptionHandling {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<HttpResponse> notFoundException(NotFoundException exception) {
-        return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(ExistException.class)
     public ResponseEntity<HttpResponse> existException(ExistException exception) {
-        return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpResponse> internalServerErrorException(Exception exception) {
         logger.error(exception.getMessage());
-        return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return createHttpResponse(INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<HttpResponse> entityNotFoundException(MethodArgumentNotValidException exception) {
-        return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<HttpResponse> contraintViolationException() {
-        return createHttpResponse(HttpStatus.BAD_REQUEST,"Must be a well-formed email address");
+        return createHttpResponse(BAD_REQUEST, "Must be a well-formed email address");
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<HttpResponse> methodNotAllowedException(HttpRequestMethodNotSupportedException exception) {
         HttpMethod supportedMethod = Objects.requireNonNull(exception.getSupportedHttpMethods()).iterator().next();
-        return createHttpResponse(HttpStatus.METHOD_NOT_ALLOWED, String.format(METHOD_IS_NOT_ALLOWED, supportedMethod));
+        return createHttpResponse(METHOD_NOT_ALLOWED, String.format(METHOD_IS_NOT_ALLOWED, supportedMethod));
     }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<HttpResponse> accessDeniedException(AccessDeniedException exception) {
-        return createHttpResponse(HttpStatus.FORBIDDEN, exception.getMessage());
+        return createHttpResponse(FORBIDDEN, exception.getMessage());
     }
 
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message) {
-        return httpResponseService.response(null,message,httpStatus);
+        return httpResponseService.response(null, message, httpStatus);
     }
 }

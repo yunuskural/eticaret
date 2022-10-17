@@ -1,15 +1,18 @@
 package com.metric.eticaret.order.service;
 
 import com.metric.eticaret.exception.domain.NotFoundException;
-import com.metric.eticaret.order.model.ShopCard;
+import com.metric.eticaret.order.model.shopcard.ShopCard;
+import com.metric.eticaret.order.model.shopcard.ShopCardDTO;
+import com.metric.eticaret.order.model.shopcard.ShopCardMapper;
 import com.metric.eticaret.order.repository.ShopCardRepository;
-import com.metric.eticaret.product.model.Product;
+import com.metric.eticaret.product.model.product.Product;
 import com.metric.eticaret.product.repository.ProductRepository;
+import com.metric.eticaret.user.model.user.User;
+import com.metric.eticaret.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -17,38 +20,60 @@ public class ShopCardServiceImpl implements ShopCardService {
 
     private final ShopCardRepository shopCardRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public ShopCard addProductToShopCard(Long productId) throws NotFoundException {
+    public ShopCardDTO addProductInShopCard(Long productId, String username) throws NotFoundException {
+        ShopCard shopCard = new ShopCard();
+        User user = userRepository.findByUsername(username);
+        if (user != null && user.getShopCard() == null) {
+            shopCard.setUser(user);
+        } else {
+            shopCard = shopCardRepository.findByUserUsername(username);
+        }
         Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Product not found"));
-        ShopCard shopCard = shopCardRepository.findById(1).orElseThrow(() -> new NotFoundException("Shopcard not found"));
         if (product != null && product.getStockQuantity() != 0) {
-            product.setShopCard(shopCard);
-            shopCard.getProducts().add(product);
-            productRepository.save(product);
+            if (shopCard.getProducts().contains(product)) {
+                product.setShopCardQuantity(product.getShopCardQuantity() + 1);
+            } else {
+                shopCard.getProducts().add(product);
+                product.setShopCardQuantity(1);
+                product.setShopCard(shopCard);
+            }
+            product.setStockQuantity(product.getStockQuantity() - 1);
             shopCardRepository.save(shopCard);
+            productRepository.save(product);
+        } else {
+            throw new NotFoundException("This product is out of stock..");
         }
-        return shopCard;
+        return ShopCardMapper.INSTANCE.toDTO(shopCard);
     }
 
     @Override
-    public ShopCard retrieveShopCard() throws NotFoundException {
-        return shopCardRepository.findById(1).orElseThrow(() -> new NotFoundException("Shop card not found"));
+    public ShopCardDTO retrieveShopCardProducts(String username) throws NotFoundException {
+        ShopCard shopCard = shopCardRepository.findByUserUsername(username);
+        if (shopCard.getProducts() == null) {
+            throw new NotFoundException("Your shop card is empty now.. You can explorer the products and continue shopping");
+        }
+        return ShopCardMapper.INSTANCE.toDTO(shopCard);
     }
 
     @Override
-    public ShopCard deleteProductInShopCard(Long productId) throws NotFoundException {
+    public ShopCardDTO deleteProductInShopCard(Long productId, String username) throws NotFoundException {
         Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Product not found"));
-        ShopCard shopCard = shopCardRepository.findById(1).orElseThrow(() -> new NotFoundException("Shopcard not found"));
+        ShopCard shopCard = shopCardRepository.findByUserUsername(username);
         if (product != null && shopCard.getProducts().contains(product)) {
-            shopCard.getProducts().remove(product);
-            product.setShopCard(null);
+            if (product.getShopCardQuantity() == 1) {
+                shopCard.getProducts().remove(product);
+                product.setShopCard(null);
+            } else {
+                product.setShopCardQuantity(product.getShopCardQuantity() - 1);
+            }
+            product.setStockQuantity(product.getStockQuantity() + 1);
             productRepository.save(product);
             shopCardRepository.save(shopCard);
         }
-        return shopCard;
+        return ShopCardMapper.INSTANCE.toDTO(shopCard);
     }
-
-
 }

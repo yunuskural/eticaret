@@ -4,14 +4,16 @@ package com.metric.eticaret.order.controller;
 import com.metric.eticaret.authentication.config.HttpResponseService;
 import com.metric.eticaret.authentication.model.HttpResponse;
 import com.metric.eticaret.exception.domain.NotFoundException;
-import com.metric.eticaret.order.model.Order;
+import com.metric.eticaret.order.model.order.OrderDTO;
 import com.metric.eticaret.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,28 +25,25 @@ public class OrderController {
     private final HttpResponseService httpResponseService;
 
     @PostMapping("/save/{username}")
-    public ResponseEntity<HttpResponse> save(@RequestBody Order newOrder,
+    public ResponseEntity<HttpResponse> save(@RequestBody OrderDTO newOrder,
                                              @PathVariable("username") String username) throws NotFoundException {
-        Order order = orderService.save(newOrder,username);
-        return httpResponseService.response(order, "Successfull", HttpStatus.CREATED);
+        OrderDTO order = orderService.save(newOrder, username);
+        return httpResponseService.response(order, "Order successfully placed. Now let's continue shopping", CREATED);
     }
 
-    @GetMapping("/orders")
-    public ResponseEntity<List<Order>>retrieveAllOrders(){
-        return new ResponseEntity<>(orderService.retrieveAllOrders(),HttpStatus.OK);
+    @GetMapping("/orders/{username}")
+    public ResponseEntity<List<OrderDTO>> retrieveAllOrders(@PathVariable("username") String username) throws NotFoundException {
+        return new ResponseEntity<>(orderService.retrieveAllOrders(username), OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpResponse> deleteOrderById(@PathVariable("id") Long id){
+    public void deleteOrderById(@PathVariable("id") Long id) {
         orderService.deleteOrderById(id);
-        return httpResponseService.response(null,"Order deleted successfully",HttpStatus.NO_CONTENT);
-
-        //todo optional uygulanabiliyor mu
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HttpResponse> getOrderrById(@PathVariable("id") Long id) throws NotFoundException {
-        Order order = orderService.getOrder(id);
-        return httpResponseService.response(order, "Successfull", HttpStatus.CREATED);
+    public ResponseEntity<HttpResponse> getOrderById(@PathVariable("id") Long id) throws NotFoundException {
+        OrderDTO order = orderService.getOrderById(id);
+        return httpResponseService.response(order, "Successfull", CREATED);
     }
 }

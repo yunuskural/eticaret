@@ -1,15 +1,15 @@
 package com.metric.eticaret.order.controller;
 
 
-import com.metric.eticaret.authentication.config.HttpResponseService;
-import com.metric.eticaret.authentication.model.HttpResponse;
 import com.metric.eticaret.exception.domain.NotFoundException;
-import com.metric.eticaret.order.model.ShopCard;
+import com.metric.eticaret.order.model.shopcard.ShopCardDTO;
 import com.metric.eticaret.order.service.ShopCardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,21 +18,22 @@ import org.springframework.web.bind.annotation.*;
 public class ShopCardController {
 
     private final ShopCardService shopCardService;
-    private final HttpResponseService httpResponseService;
 
-    @PostMapping("/add-product/{productId}")
-    public ResponseEntity<HttpResponse> addProductToShopCard(@PathVariable("productId") Long productId) throws NotFoundException {
-        ShopCard shopCard = shopCardService.addProductToShopCard(productId);
-        return httpResponseService.response(shopCard, "Successfully added", HttpStatus.OK);
+    @PostMapping("/add-product/{productId}/user/{username}")
+    public ResponseEntity<ShopCardDTO> addProductInShopCard(@PathVariable("productId") Long productId,
+                                                            @PathVariable("username") String username) throws NotFoundException {
+        return new ResponseEntity<>(shopCardService.addProductInShopCard(productId, username), OK);
     }
 
-    @GetMapping("/products")
-    public ResponseEntity<HttpResponse> retrieveShopCard() throws NotFoundException {
-        return httpResponseService.response(shopCardService.retrieveShopCard(), "Successfully returned shop-card products", HttpStatus.OK);
+    @GetMapping("/products/{username}")
+    public ResponseEntity<ShopCardDTO> retrieveShopCard(@PathVariable("username") String username) throws NotFoundException {
+        return new ResponseEntity<>(shopCardService.retrieveShopCardProducts(username), OK);
     }
 
-    @DeleteMapping("/delete-product/{productId}")
-    public ResponseEntity<ShopCard> deleteProductInShopCard(@PathVariable("productId") Long productId) throws NotFoundException {
-        return new ResponseEntity<>(shopCardService.deleteProductInShopCard(productId), HttpStatus.NO_CONTENT);
+
+    @DeleteMapping("/delete-product/{productId}/user/{username}")
+    public ResponseEntity<ShopCardDTO> deleteProductInShopCard(@PathVariable("productId") Long productId,
+                                                               @PathVariable("username") String username) throws NotFoundException {
+        return new ResponseEntity<>(shopCardService.deleteProductInShopCard(productId, username), NO_CONTENT);
     }
 }

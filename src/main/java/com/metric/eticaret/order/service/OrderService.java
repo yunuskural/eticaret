@@ -1,17 +1,17 @@
 package com.metric.eticaret.order.service;
 
 import com.metric.eticaret.exception.domain.NotFoundException;
-import com.metric.eticaret.order.model.Order;
+import com.metric.eticaret.order.model.order.OrderDTO;
 
 import java.util.List;
 
 public interface OrderService {
 
-    Order save(Order order, String username) throws NotFoundException;
+    OrderDTO save(OrderDTO order, String username) throws NotFoundException;
 
-    List<Order> retrieveAllOrders();
+    List<OrderDTO> retrieveAllOrders(String username) throws NotFoundException;
 
-    Order getOrder(Long id) throws NotFoundException;
+    OrderDTO getOrderById(Long id) throws NotFoundException;
 
     void deleteOrderById(Long id);
 }

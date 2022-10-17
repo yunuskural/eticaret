@@ -1,6 +1,7 @@
-package com.metric.eticaret.user.model;
+package com.metric.eticaret.user.model.authority;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.metric.eticaret.user.model.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,11 +25,11 @@ public class Authority {
     @Column(name = "authority_name")
     private String name;
 
-    @ManyToMany(mappedBy = "authorities",cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authorities", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("authorities")
     private List<Role> roles;
 
     public Authority(String name) {
-        this.name=name;
+        this.name = name;
     }
 }

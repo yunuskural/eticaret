@@ -1,8 +1,9 @@
 package com.metric.eticaret.authentication.service;
 
-import com.metric.eticaret.user.model.Authority;
-import com.metric.eticaret.user.model.Role;
-import com.metric.eticaret.user.model.User;
+import com.metric.eticaret.exception.domain.NotFoundException;
+import com.metric.eticaret.user.model.authority.Authority;
+import com.metric.eticaret.user.model.role.Role;
+import com.metric.eticaret.user.model.user.User;
 import com.metric.eticaret.user.repository.RoleRepository;
 import com.metric.eticaret.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,22 +28,29 @@ public class CustemUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username);
 
+        if (user != null && user.getNonlocked()){
+            try {
+                throw new NotFoundException("Account is locked. Please contact your administrator");
+            } catch (NotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (user == null) {
             return new org.springframework.security.core.userdetails.User(
                     " ", " ", true, true, true, true,
-                    getAuthorities(Arrays.asList(
+                    getAuthorities(Collections.singleton(
                             roleRepository.findByRoleName("ROLE_USER"))));
-        }else {
+        } else {
             user.setLastLoginDate(new Date().getTime());
             userRepository.save(user);
             return new org.springframework.security.core.userdetails.User(
-                    user.getUsername(), user.getPassword(), user.isActive(), true, true,
+                    user.getUsername(), user.getPassword(), user.getStatus(),true, true,
                     true, getAuthorities(user.getRoles()));
         }
-
     }
 
-    public Collection<? extends GrantedAuthority> getAuthorities(List<Role> roles) {
+    public Collection<? extends GrantedAuthority> getAuthorities(Set<Role> roles) {
         return getGrantedAuthorities(getPrivileges(roles));
     }
 
@@ -54,7 +62,7 @@ public class CustemUserDetailsService implements UserDetailsService {
         return authorities;
     }
 
-    private List<String> getPrivileges(List<Role> roles) {
+    private List<String> getPrivileges(Set<Role> roles) {
 
         List<String> privileges = new ArrayList<>();
         List<Authority> authorities = new ArrayList<>();
@@ -67,8 +75,6 @@ public class CustemUserDetailsService implements UserDetailsService {
         }
         return privileges;
     }
-
-
 
 
 }

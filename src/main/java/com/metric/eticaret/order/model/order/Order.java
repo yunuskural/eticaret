@@ -1,26 +1,28 @@
-package com.metric.eticaret.order.model;
+package com.metric.eticaret.order.model.order;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.metric.eticaret.product.model.Product;
-import com.metric.eticaret.user.model.User;
+import com.metric.eticaret.product.model.product.Product;
+import com.metric.eticaret.user.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "orders")
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler", "orders"})
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "order_number")
     private int orderNumber;
@@ -37,9 +39,6 @@ public class Order {
     @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name = "currency_code")
-    private String currencyCode;
-
     @Column(name = "order_date")
     private Long orderDate;
 
@@ -49,16 +48,16 @@ public class Order {
     @Column(name = "tax_number")
     private BigDecimal taxNumber;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties("orders")
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(name = "order_products",
             joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
     @JsonIgnoreProperties("orders")
-    private Set<Product> products;
+    private List<Product> products;
 
 }

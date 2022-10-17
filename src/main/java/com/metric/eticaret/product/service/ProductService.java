@@ -1,17 +1,18 @@
 package com.metric.eticaret.product.service;
 
 import com.metric.eticaret.exception.domain.NotFoundException;
-import com.metric.eticaret.product.model.Product;
+import com.metric.eticaret.product.model.product.Product;
+import com.metric.eticaret.product.model.product.ProductDTO;
 
 import java.util.List;
 
 public interface ProductService {
 
-    Product save(Product product) throws NotFoundException;
+    ProductDTO save(ProductDTO product) throws NotFoundException;
 
-    List<Product> findAllByProductName(String productName);
+    List<ProductDTO> findAllByProductName(String productName);
 
-    List<Product> findAllProducts();
+    List<ProductDTO> findAllProducts();
 
     void deleteProductById(Long id) throws NotFoundException;
 

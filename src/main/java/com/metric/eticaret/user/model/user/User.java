@@ -1,26 +1,28 @@
-package com.metric.eticaret.user.model;
+package com.metric.eticaret.user.model.user;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.metric.eticaret.order.model.Order;
-import lombok.*;
+import com.metric.eticaret.order.model.order.Order;
+import com.metric.eticaret.order.model.shopcard.ShopCard;
+import com.metric.eticaret.user.model.role.Role;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"})
 public class User {
 
 
@@ -58,15 +60,17 @@ public class User {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    @JsonIgnoreProperties("users")
-    private List<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private Set<Order> orders;
+    private List<Order> orders;
 
-    @Column(name = "active")
-    private boolean isActive;
+    @OneToOne(mappedBy = "user")
+    private ShopCard shopCard;
 
-    @Column(name = "notlocked")
-    private boolean isNotLocked;
+    @Column(name = "status")
+    private Boolean status;
+
+    @Column(name = "nonlocked")
+    private Boolean nonlocked;
 }

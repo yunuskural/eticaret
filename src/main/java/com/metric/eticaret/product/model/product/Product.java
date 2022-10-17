@@ -1,9 +1,9 @@
-package com.metric.eticaret.product.model;
+package com.metric.eticaret.product.model.product;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.metric.eticaret.order.model.Order;
-import com.metric.eticaret.order.model.ShopCard;
+import com.metric.eticaret.order.model.order.Order;
+import com.metric.eticaret.order.model.shopcard.ShopCard;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "products")
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"})
 public class Product {
 
     @Id
@@ -44,11 +45,16 @@ public class Product {
     @Column(name = "brand")
     private String brand;
 
+    @Column(name = "currency_code")
+    private String currencyCode;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("products")
     private ShopCard shopCard;
 
-    @ManyToMany(mappedBy = "products")
+    @Column(name = "shopcard_quantity")
+    private Integer shopCardQuantity;
+
+    @ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
     private List<Order> orders;
 
 }

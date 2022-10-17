@@ -1,7 +1,7 @@
 package com.metric.eticaret.authentication.config;
 
-import com.metric.eticaret.user.model.Authority;
-import com.metric.eticaret.user.model.Role;
+import com.metric.eticaret.user.model.authority.Authority;
+import com.metric.eticaret.user.model.role.Role;
 import com.metric.eticaret.user.repository.AuthorityRepository;
 import com.metric.eticaret.user.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;

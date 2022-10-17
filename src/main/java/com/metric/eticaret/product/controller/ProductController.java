@@ -1,19 +1,20 @@
 package com.metric.eticaret.product.controller;
 
 
-import com.metric.eticaret.authentication.model.HttpResponse;
 import com.metric.eticaret.authentication.config.HttpResponseService;
+import com.metric.eticaret.authentication.model.HttpResponse;
 import com.metric.eticaret.exception.domain.NotFoundException;
-import com.metric.eticaret.product.model.Product;
+import com.metric.eticaret.product.model.product.Product;
+import com.metric.eticaret.product.model.product.ProductDTO;
 import com.metric.eticaret.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/product")
@@ -26,22 +27,22 @@ public class ProductController {
 
 
     @PostMapping("/save")
-    public ResponseEntity<HttpResponse> save(@RequestBody Product newProduct) throws NotFoundException {
-        Product product = productService.save(newProduct);
-        return httpResponseService.response(product, "Successfully created", HttpStatus.CREATED);
+    public ResponseEntity<HttpResponse> save(@RequestBody ProductDTO newProduct) throws NotFoundException {
+        ProductDTO product = productService.save(newProduct);
+        return httpResponseService.response(product, "Successfully created", CREATED);
     }
 
     @GetMapping("/products")
     public ResponseEntity<HttpResponse> retrieveAllProducts() {
-        List<Product> products = productService.findAllProducts();
-        return httpResponseService.response(products, "Products Successfullly loaded", HttpStatus.OK);
+        List<ProductDTO> products = productService.findAllProducts();
+        return httpResponseService.response(products, "Products Successfullly loaded", OK);
 
     }
 
     @GetMapping("/products/{productName}")
-    public ResponseEntity<HttpResponse> findAllByProductName(@PathVariable("productName") String productName) {
-        List<Product> products = productService.findAllByProductName(productName);
-        return httpResponseService.response(products, String.format("Product(s) %s successfullly loaded",productName), HttpStatus.OK);
+    public ResponseEntity<List<ProductDTO>> findAllByProductName(@PathVariable("productName") String productName) {
+        List<ProductDTO> products = productService.findAllByProductName(productName);
+        return new ResponseEntity<>(products, OK);
 
     }
 
@@ -51,8 +52,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HttpResponse> getProductById(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<HttpResponse> findProductById(@PathVariable("id") Long id) throws NotFoundException {
         Product product = productService.getProductById(id);
-        return httpResponseService.response(product, "Successfull", HttpStatus.OK);
+        return httpResponseService.response(product, "Successfull", OK);
     }
 }
